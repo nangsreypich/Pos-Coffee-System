@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <script>
+        // Function to parse URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Main logic to handle URL parameters and page redirection
+        document.addEventListener('DOMContentLoaded', function() {
+            var doAction = getUrlParameter('do');
+
+            if (doAction === 'add_classroom') {
+                window.location.href = 'model/add_classroom.php';
+            } else if (doAction === 'add_grade') {
+                window.location.href = 'model/add_grade.php';
+            } else {
+                // Redirect to login page if no valid 'do' parameter is found
+                window.location.href = 'user/login.php';
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- You can add some content here if needed, but JavaScript handles the redirection -->
+</body>
+</html>
