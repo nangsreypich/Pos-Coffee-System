@@ -87,6 +87,7 @@
     <!-- Sidebar menu -->
     <ul class="list-group">
         <li class="list-unstyled"><a href="dashboard_manager.php" class="text-decoration-none"> <i class="fa fa-gauge"></i> Dashboard</a></li>
+        <li class="list-unstyled"><a href="my_profile.php" class="text-decoration-none"><i class="fa fa-user"></i> My Profile</a></li>
         <li class="list-unstyled"><a href="positions.php" class="text-decoration-none"><i class="fa fa-briefcase"></i> Position</a></li>
         <li class="list-unstyled"><a href="tables.php" class="text-decoration-none"><i class="fa fa-table"></i> Tables</a></li>
         <li class="list-unstyled"><a href="categorys.php" class="text-decoration-none"><i class="fa fa-list"></i> Categorys</a></li>
@@ -119,20 +120,29 @@
         </li>
         <li class="list-unstyled dropdown">
             <a href="#" class="text-decoration-none dropdown-toggle" id="staffDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-user"></i> Ingredients
+            <i class="fa fa-pepper-hot"></i> Ingredients
             </a>
             <ul class="dropdown-menu" aria-labelledby="staffDropdown">
                 <li><a class="dropdown-item" href="ingredients.php">Add Ingredient</a></li>
                 <li><a class="dropdown-item" href="all_ingredient.php">All Ingredient</a></li>
             </ul>
         </li>
+        <!--<li class="list-unstyled dropdown">-->
+        <!--    <a href="#" class="text-decoration-none dropdown-toggle" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">-->
+        <!--        <i class="fa fa-cubes-stacked"></i> Stock In-->
+        <!--    </a>-->
+        <!--    <ul class="dropdown-menu" aria-labelledby="stockDropdown">-->
+        <!--        <li><a class="dropdown-item" href="stock_in.php">Stock In</a></li>-->
+        <!--        <li><a class="dropdown-item" href="all_stock_in.php">All Stock in</a></li>-->
+        <!--    </ul>-->
+        <!--</li>-->
         <li class="list-unstyled dropdown">
             <a href="#" class="text-decoration-none dropdown-toggle" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-cubes-stacked"></i> Stock
+                <i class="fa fa-cubes-stacked"></i> Stock 
             </a>
             <ul class="dropdown-menu" aria-labelledby="stockDropdown">
-                <li><a class="dropdown-item" href="stock_in.php">Stock In</a></li>
-                <li><a class="dropdown-item" href="stock_order.php">Stock Order</a></li>
+                <li><a class="dropdown-item" href="stock_order.php">Add Stock </a></li>
+                <li><a class="dropdown-item" href="all_stock_order.php">All Stock</a></li>
             </ul>
         </li>
         <li class="list-unstyled dropdown">
@@ -141,7 +151,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="reportDropdown">
                 <li><a class="dropdown-item" href="revenue.php">Revenue</a></li>
-                <li><a class="dropdown-item" href="expense_report.php">Expense</a></li>
+                <li><a class="dropdown-item" href="expense.php">Expense</a></li>
             </ul>
         </li>
         <li class="list-unstyled"><a href="users.php" class="text-decoration-none"><i class="fa fa-gear"></i> Users</a></li>

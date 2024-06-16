@@ -71,7 +71,7 @@ $saleList = $statement->fetchAll(PDO::FETCH_ASSOC);
     <?php include('header.php'); ?>
     <div class="row">
         <!-- Sidebar -->
-        <?php include('sidebar_manager.php') ?>
+        <?php include('sidebar_cashier.php') ?>
         <!-- Main Content Area -->
         <div id="mainContent" class="col-md-10 mt-4">
             <h1>Dashboard</h1>

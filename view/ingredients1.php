@@ -102,7 +102,7 @@ $ingredientList = $statement->fetchAll(PDO::FETCH_ASSOC);
 <div class="container-fluid">
     <?php include('header.php'); ?>
     <div class="row">
-        <?php include('sidebar_manager.php') ?>
+        <?php include('sidebar_stocker.php') ?>
         <div class="col-md-10 mt-4">
             <h2>Add New Ingredient</h2>
             <?php if ($success) { ?>

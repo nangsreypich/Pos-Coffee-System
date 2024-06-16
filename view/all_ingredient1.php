@@ -1,58 +1,14 @@
 <?php
 session_start();
 if (!isset($_SESSION["username"])) {
-    // Redirect to the login page if not logged in
     header("Location: ../user/login.php");
-    exit(); // Make sure to exit after redirection
+    exit();
 }
 
 require("../controller/connection.php");
 
-$errors = [];
+$error = [];
 $success = '';
-$product_name = "";
-$price = "";
-$imagePath = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get data from form
-    $product_name = $_POST["product_name"];
-    $price = $_POST["price"];
-
-    // Validation
-    if (!$product_name) {
-        $errors[] = "Product name is required";
-    }
-    if (!$price) {
-        $errors[] = "Price is required";
-    }
-
-    if (empty($errors)) {
-        require_once("globalFunction.php");
-        // Upload Picture
-        $image = $_FILES['image'] ?? null;
-        if ($image && $image['error'] === UPLOAD_ERR_OK) {
-            $imagePath = "../image/" . date("YmdHis") . '_' . basename($image['name']);
-            move_uploaded_file($image['tmp_name'], $imagePath);
-        }
-
-        // Prepare and execute statement
-        $statement = $pdo->prepare("INSERT INTO ingredient(product_name, price, image, status) VALUES(:product_name, :price, :image, 1)");
-        $statement->bindValue(':product_name', $product_name);
-        $statement->bindValue(':price', $price);
-        $statement->bindValue(':image', $imagePath);
-
-        if ($statement->execute()) {
-            $success = "Ingredient added successfully";
-            // Clear form values
-            $product_name = "";
-            $price = "";
-            $imagePath = "";
-        } else {
-            $errors[] = "Failed to add ingredient";
-        }
-    }
-}
 
 $statement = $pdo->prepare("SELECT * from ingredient WHERE ingredient.status=1");
 $statement->execute();
@@ -102,41 +58,21 @@ $ingredientList = $statement->fetchAll(PDO::FETCH_ASSOC);
 <div class="container-fluid">
     <?php include('header.php'); ?>
     <div class="row">
-        <?php include('sidebar_manager.php') ?>
+        <?php include('sidebar_stocker.php') ?>
         <div class="col-md-10 mt-4">
-            <h2>Add New Ingredient</h2>
-            <?php if ($success) { ?>
-                <div class="alert alert-success"><?php echo $success; ?></div>
-            <?php } ?>
-            <?php foreach ($errors as $error) { ?>
-                <div class="alert alert-danger"><?php echo $error; ?></div>
-            <?php } ?>
-            <form action="" method="post" enctype="multipart/form-data" class="mt-3">
-                <div class="mb-3 row">
-                    <label for="product_name" class="form-label col-md-3">Product Name</label>
-                    <div class="col-md-9" style="width:60%;">
-                        <input type="text" id="product_name" class="form-control" name="product_name" value="<?php echo htmlspecialchars($product_name); ?>" placeholder="Enter product name" />
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <label for="price" class="form-label col-md-3">Price</label>
-                    <div class="col-md-9" style="width:60%;">
-                        <input type="text" id="price" class="form-control" name="price" value="<?php echo htmlspecialchars($price); ?>" placeholder="Enter price" />
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <label for="image" class="form-label col-md-3">Photo</label>
-                    <div class="col-md-9" style="width:60%;">
-                        <input type="file" id="image" class="form-control" name="image" />
-                    </div>
-                </div>
-                <div class="col-md-9" style="width:60%;">
-                    <button class="btn btn-success mb-4" style="float:left;">Save</button>
-                </div>
-            </form>
-            <h1 class="mt-5">All Ingredients</h1>
+            <h1>All Ingredients</h1>
             <div class="table-responsive">
-                <a href="#addIngredientForm"><button style="float:right;" class="btn btn-primary mb-2">+Add Ingredient</button></a>
+                <a href="ingredients.php"><button style="float:right;" class="btn btn-primary mb-2">+Add Ingredient</button></a>
+                <?php if ($success) : ?>
+                    <div class="alert alert-success" role="alert">
+                        <?php echo $success; ?>
+                    </div>
+                <?php endif; ?>
+                <?php foreach ($error as $err) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?php echo $err; ?>
+                    </div>
+                <?php endforeach; ?>
                 <table id="example1" class="table table-striped table-bordered">
                     <thead>
                         <tr>

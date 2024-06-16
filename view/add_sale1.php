@@ -196,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
     <?php include('header.php'); ?>
     <div class="row">
         <!-- Categories -->
-        <?php include('sidebar_manager.php') ?>
+        <?php include('sidebar_cashier.php') ?>
         <div class="col-md-5 mt-4">
             <h2>Categories</h2>
             <div class="categories-row">

@@ -110,7 +110,7 @@ if ($isPrinting) {
         <?php include('header.php'); ?>
         <div class="row">
             <!-- Sidebar -->
-            <?php include('sidebar_manager.php') ?>
+            <?php include('sidebar_cashier.php') ?>
             <!-- Main Content Area -->
             <div class="col-md-10 mt-4">
                 <h1>Sales Report</h1>

@@ -26,9 +26,6 @@ function redirectBasedOnUserType($userType) {
         case "Stocker":
             header("Location: ../view/dashboard_stocker.php");
             break;
-        case "Admin":
-            header("Location: ../view/dashboard_admin.php");
-            break;
         default:
             // Redirect to a generic dashboard if type is not recognized
             header("Location: ../view/dashboard.php");
