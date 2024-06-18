@@ -17,7 +17,7 @@
             echo '<span style="padding-right: 20px; color: blue;">Welcome, '.$username.'</span>';
             echo '<a href="../user/logout.php" class="btn btn-danger"><i class="fa fa-right-from-bracket"></i> Logout</a>';
         } else {
-            echo '<a href="../user/login.php" class="btn btn-success">Login</a>';
+            echo '<a href="../user/login.php" class="btn " style="background-color:#b48712;">Login</a>';
         }
         ?>
     </div>

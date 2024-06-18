@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
     $payment_type = $_POST['payment_type'];
     $total_payment = $_POST['total_payment'];
     $change = $_POST['change'];
-    $table_id = $_POST['table_id'];
+  
     $total = 0;
     $orderDetails = []; // Array to store all order details
 
@@ -127,9 +127,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
     }
     if ($change === null || $change === '') { // Check if change is not set or empty
         $errors[] = "Change is required";
-    }
-    if (!$table_id) {
-        $errors[] = "Table ID is required";
     }
 
     // Loop through the selected drinks and accumulate the total
@@ -175,8 +172,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
         try {
             // Insert all items in one go
             foreach ($orderDetails as $orderItem) {
-                $stmt = $pdo->prepare("INSERT INTO sale (table_id, invoice_id, cus_id, drink_id, price, qty, total, total_payment, `change`, payment_type, sale_date) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-                $stmt->execute([$table_id, $invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'], $orderItem['qty'], $orderItem['total'], $total_payment, $change, $payment_type, $sale_date]);
+                $stmt = $pdo->prepare("INSERT INTO sale (invoice_id, cus_id, drink_id, price, qty, total, total_payment, `change`, payment_type, sale_date) VALUES (?,?,?,?,?,?,?,?,?,?)");
+$stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'], $orderItem['qty'], $orderItem['total'], $total_payment, $change, $payment_type, $sale_date]);
+
             }
 
             // Commit the transaction
@@ -254,25 +252,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
                             <option value="debit">Debit Card</option>
                         </select>
                     </div>
-                    <?php
-                    // Database connection
-                    require("../controller/connection.php");
-
-                    $table_data = [];
-                    $stmt = $pdo->query("SELECT id, name FROM coffee_table where status=1");
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $table_data[] = $row;
-                    }
-
-                    // Display the dropdown menu
-                    ?>
-                    <label for="table_id" class="mt-2">Select a table:</label>
-                    <select name="table_id" id="table_id" class="form-control" style="width: 50%;">
-                        <option value="">Select Table</option>
-                        <?php foreach ($table_data as $table) : ?>
-                            <option value="<?php echo $table['id']; ?>"><?php echo $table['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
                     <input type="hidden" name="process_order" value="1">
                     <div class="form-group">
                         <label for="total_payment">Total Payment:</label>

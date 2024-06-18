@@ -1,5 +1,7 @@
+
 <?php
+// Function to show alert messages
 function showAlert($message) {
-    echo '<div class="alert alert-danger" role="alert">' . $message . '</div>';
+    echo "<script>alert('$message');</script>";
 }
 ?>

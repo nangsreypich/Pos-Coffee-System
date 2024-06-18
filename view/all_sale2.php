@@ -23,13 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $saleId = $_POST['id'];
 
         // Prepare SQL query to fetch sale details
-        $statement = $pdo->prepare("SELECT sale.*, drink.name as drink_name 
-                                    FROM sale 
-                                    INNER JOIN drink ON sale.drink_id = drink.id
-                                    WHERE sale.id = ?");
-        
-        // Bind parameters
-        $statement->bindParam(1, $saleId, PDO::PARAM_INT);
+        $statement = $pdo->prepare("SELECT orders.*, drink.name as drink_name 
+                                    FROM orders
+                                    INNER JOIN drink ON orders.drink_id = drink.id
+                                    WHERE orders.id = :saleId");
+
+        // Bind parameter
+        $statement->bindParam(':saleId', $saleId, PDO::PARAM_INT);
         
         // Execute query
         $statement->execute();
@@ -43,11 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// Prepare SQL query to fetch all sales data
-$statement = $pdo->prepare("SELECT sale.*, drink.name as drink_name 
-                            FROM sale 
-                            INNER JOIN drink ON sale.drink_id = drink.id
-                            WHERE sale.status = 1");
+// Prepare SQL query to fetch all sales data for the logged-in user
+$statement = $pdo->prepare("SELECT orders.*, drink.name as drink_name 
+                            FROM orders
+                            INNER JOIN drink ON orders.drink_id = drink.id
+                            WHERE orders.status = 1 AND orders.order_by = :username");
+
+// Bind parameter
+$statement->bindParam(':username', $_SESSION["username"], PDO::PARAM_STR);
 
 // Execute query
 $statement->execute();
@@ -62,10 +65,10 @@ $saleList = $statement->fetchAll(PDO::FETCH_ASSOC);
     <?php include('header.php'); ?>
     <div class="row">
         <!-- Sidebar -->
-        <?php include('sidebar_cashier.php') ?>
+        <?php include('sidebar_customer.php') ?>
         <!-- Main Content Area -->
         <div class="col-md-10 mt-4">
-            <h1>All Sale</h1>
+            <h1>All Orders</h1>
             <div class="table-responsive">
                 <a href="add_sale.php"><button style="float:right;" class="btn btn-primary mb-2">+ Add Sale</button></a>
                 <table id="example1" class="table table-striped table-bordered mt-2">
@@ -169,7 +172,7 @@ $saleList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             // AJAX request to fetch sale details
             $.ajax({
-                url: 'all_sale1.php',
+                url: 'all_sale2.php',
                 method: 'post',
                 data: { action: 'fetch_sale', id: saleId },
                 dataType: 'json',

@@ -121,7 +121,7 @@ $userList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             <h2 class="mt-5">All Users</h2>
             <?php if (!empty($userList)) { ?>
-                <table class="table table-bordered mt-3">
+                <table id="example1" class="table table-striped table-bordered mt-2">
                     <thead>
                         <tr>
                             <th>#</th>

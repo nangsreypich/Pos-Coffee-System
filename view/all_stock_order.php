@@ -56,14 +56,14 @@ $ingredientsList = $ingredientStatement->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="table-responsive">
                 <a href="stock_order.php"><button style="float:right;" class="btn btn-primary mb-2">+ Add Stock
-                       </button></a>
+                    </button></a>
                 <table id="example1" class="table table-striped table-bordered mt-3">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Stocker Name</th>
                             <th scope="col">Product ID</th>
-                            <!--<th scope="col">Price</th>-->
+                            <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Stock Date</th>
                             <th scope="col">Expired Date</th>
@@ -74,9 +74,11 @@ $ingredientsList = $ingredientStatement->fetchAll(PDO::FETCH_ASSOC);
                         <?php foreach ($stockInList as $key => $stockIn) { ?>
                             <tr id="stock-in-row-<?php echo $stockIn['id']; ?>">
                                 <th scope="row"><?php echo $key + 1 ?></th>
-                                <td class="stocker-name" data-stocker-id="<?php echo $stockIn['stocker_id']; ?>"><?php echo $stockIn['stocker_name']; ?></td>
-                                <td class="product-name" data-product-id="<?php echo $stockIn['product_id']; ?>"><?php echo $stockIn['product_name']; ?></td>
-                                <!--<td class="price">$<?php //echo number_format($stockIn['price'], 2); ?></td>-->
+                                <td class="stocker-name" data-stocker-id="<?php echo $stockIn['stocker_id']; ?>">
+                                    <?php echo $stockIn['stocker_name']; ?></td>
+                                <td class="product-name" data-product-id="<?php echo $stockIn['product_id']; ?>">
+                                    <?php echo $stockIn['product_name']; ?></td>
+                                <td class="price">$<?php echo number_format($stockIn['price'], 2); ?></td>
                                 <td class="quantity"><?php echo $stockIn['qty']; ?></td>
                                 <td class="stock-date"><?php echo $stockIn['order_date']; ?></td>
                                 <td class="expired-date"><?php echo $stockIn['expired_date']; ?></td>
@@ -130,13 +132,15 @@ $ingredientsList = $ingredientStatement->fetchAll(PDO::FETCH_ASSOC);
                     </div>
 
                     <div class="form-group">
-                        <label for="edit_price">Price</label>
-                        <input type="text" class="form-control" id="edit_price" name="price" required>
-                    </div>
-                    <div class="form-group">
                         <label for="edit_quantity">Quantity</label>
                         <input type="text" class="form-control" id="edit_quantity" name="qty" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="edit_price">Price</label>
+                        <input type="text" class="form-control" id="edit_price" name="price" required>
+                    </div>
+
                     <div class="form-group">
                         <label for="edit_order_date">Order Date</label>
                         <input type="date" id="edit_order_date" class="form-control" name="order_date" required />
@@ -175,16 +179,15 @@ $ingredientsList = $ingredientStatement->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Edit Stock In Modal
-        $(".editStockInBtn").click(function() {
+        $(".editStockInBtn").click(function () {
             var id = $(this).data("id");
             var stockerId = $(this).closest("tr").find(".stocker-name").data("stocker-id");
             var productId = $(this).closest("tr").find(".product-name").data("product-id");
             var price = $(this).closest("tr").find(".price").text();
             var quantity = $(this).closest("tr").find(".quantity").text();
             var stockDate = $(this).closest("tr").find(".stock-date").text();
-            var stockStatus = $(this).closest("tr").find(".stock-status").text();
             var expiredDate = $(this).closest("tr").find(".expired-date").text();
 
             $("#edit_stock_id").val(id);
@@ -192,74 +195,108 @@ $ingredientsList = $ingredientStatement->fetchAll(PDO::FETCH_ASSOC);
             $("#edit_quantity").val(quantity);
             $("#edit_order_date").val(stockDate);
             $("#edit_expired_date").val(expiredDate);
-            
             $("#edit_stocker_id").val(stockerId);
             $("#edit_product_id").val(productId);
 
             $("#editStockInModal").modal("show");
         });
-
-        // Submit Edit Stock In Form
-        $("#editStockInForm").submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            var url = 'edit_stock_order.php';
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: form.serialize(),
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        var id = $("#edit_stock_id").val();
-                        var newStockerId = response.stocker_id;
-                        var newProductId = response.product_id;
-                        var newPrice = response.price;
-                        var newQuantity = response.qty; // Use 'qty' instead of 'quantity'
-                        var newStockDate = response.order_date; // Check if 'order_date' is returned correctly
-                        var newExpiredDate = response.expired_date;
-
-                        $("#stock-in-row-" + id).find(".stocker-name").text(newStockerId);
-                        $("#stock-in-row-" + id).find(".product-name").text(newProductId);
-                        $("#stock-in-row-" + id).find(".price").text(newPrice);
-                        $("#stock-in-row-" + id).find(".quantity").text(newQuantity);
-                        $("#stock-in-row-" + id).find(".stock-date").text(newStockDate);
-                        $("#stock-in-row-" + id).find(".stock-status").text(newStockStatus);
-                        $("#stock-in-row-" + id).find(".expired-date").text(newExpiredDate);
-
-                        $("#editStockInModal").modal("hide");
-                        $("#success-message").text("Stock updated successfully").show().delay(3000).fadeOut();
-                    } else {
-                        alert("Failed to update stock: " + response.errors.join(', '));
-                    }
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                    alert("Failed to update stock");
-                }
-            });
-        });
     
-        // Submit Delete Stock In Form
-        $("#deleteStockInForm").submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            var url = 'delete_stock_order.php';
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: form.serialize(),
-                success: function(data) {
-                    var id = form.find('#delete_stock_order_id').val();
-                    $("#stock-in-row-" + id).remove();
-                    $("#deleteStockInModal").modal("hide");
-                    alert("Stock in entry deleted successfully");
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                    alert("Failed to delete stock in entry");
-                }
-            });
-        });
+        $("#editStockInForm").submit(function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var url = 'edit_stock_order.php';
+
+    // Parse price to remove non-numeric characters
+    var price = parseFloat($("#edit_price").val().replace(/[^0-9.-]/g, ''));
+
+    // Add validation for price
+    if (isNaN(price)) {
+        alert("Invalid price format");
+        return;
+    }
+
+    // Set the parsed price back to the input field
+    $("#edit_price").val(price);
+
+    // Continue with AJAX request
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: form.serialize(),
+        dataType: 'json',
+        success: function (response) {
+    if (response.success) {
+        // Example: Update table row with new data (assuming response structure)
+        var id = $("#edit_stock_id").val();
+        var newStockerId = response.stocker_id;
+        var newProductId = response.product_id;
+        var newPrice = parseFloat(response.price); // Parse as float
+
+        // Check if newPrice is a valid number before formatting
+        if (!isNaN(newPrice)) {
+            newPrice = newPrice.toFixed(2); // Example formatting for price
+        } else {
+            newPrice = "Invalid Price"; // Handle invalid price scenario
+        }
+
+        var newQuantity = response.qty;
+        var newStockDate = response.order_date;
+        var newExpiredDate = response.expired_date;
+
+        $("#stock-in-row-" + id).find(".stocker-name").text(newStockerId);
+        $("#stock-in-row-" + id).find(".product-name").text(newProductId);
+        $("#stock-in-row-" + id).find(".price").text("$" + newPrice); // Update with formatted price
+        $("#stock-in-row-" + id).find(".quantity").text(newQuantity);
+        $("#stock-in-row-" + id).find(".stock-date").text(newStockDate);
+        $("#stock-in-row-" + id).find(".expired-date").text(newExpiredDate);
+
+        $("#editStockInModal").modal("hide");
+        $("#success-message").text("Stock updated successfully").show().delay(3000).fadeOut();
+    } else {
+        alert("Failed to update stock: " + response.errors.join(', '));
+    }
+},
+
+        error: function (data) {
+            console.log('Error:', data);
+            alert("Failed to update stock");
+        }
     });
+});
+
+       // Delete Stock In Modal
+$(".deleteStockInBtn").click(function () {
+    var id = $(this).data("id");
+    var productName = $(this).closest("tr").find(".product-name").text(); // Assuming product name is displayed in the table
+
+    $("#delete_stock_order_id").val(id);
+    $("#deleteProductName").text(productName);
+
+    $("#deleteStockInModal").modal("show");
+});
+
+// Submit Delete Stock In Form
+$("#deleteStockInForm").submit(function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var url = 'delete_stock_order.php';
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: form.serialize(),
+        success: function (data) {
+            var id = form.find('#delete_stock_order_id').val();
+            $("#stock-in-row-" + id).remove();
+            $("#deleteStockInModal").modal("hide");
+            $("#success-message").text("Stock entry deleted successfully").show().delay(3000).fadeOut();
+        },
+        error: function (data) {
+            console.log('Error:', data);
+            alert("Failed to delete stock entry");
+        }
+    });
+});
+
+});
 </script>

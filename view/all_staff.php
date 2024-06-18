@@ -12,7 +12,7 @@ $statement->execute();
 $staffList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 // Fetch all positions for the dropdown
-$positionStatement = $pdo->prepare("SELECT id, name FROM position");
+$positionStatement = $pdo->prepare("SELECT id, name FROM position where position.status=1");
 $positionStatement->execute();
 $positions = $positionStatement->fetchAll(PDO::FETCH_ASSOC);
 ?>

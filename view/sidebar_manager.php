@@ -73,13 +73,13 @@
         if (isset($_COOKIE["isLogin"])) {
             $isLogin = $_COOKIE["isLogin"];
             if ($isLogin == false) {
-                echo '<a href="../user/login.php" class="btn btn-success" style="margin-left: 10px;">Login</a>';
+                echo '<a href="../user/logout.php" class="btn btn-success" style="margin-left: 10px;">Login</a>';
             } else {
-                echo '<a href="../user/login.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
+                echo '<a href="../user/logout.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
             }
         } else {
             // If $isLogin is not set, provide a default behavior (e.g., show login button)
-            echo '<a href="../user/login.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
+            echo '<a href="../user/logout.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
         }
         ?>
     </div>
@@ -89,7 +89,7 @@
         <li class="list-unstyled"><a href="dashboard_manager.php" class="text-decoration-none"> <i class="fa fa-gauge"></i> Dashboard</a></li>
         <li class="list-unstyled"><a href="my_profile.php" class="text-decoration-none"><i class="fa fa-user"></i> My Profile</a></li>
         <li class="list-unstyled"><a href="positions.php" class="text-decoration-none"><i class="fa fa-briefcase"></i> Position</a></li>
-        <li class="list-unstyled"><a href="tables.php" class="text-decoration-none"><i class="fa fa-table"></i> Tables</a></li>
+        <!--<li class="list-unstyled"><a href="tables.php" class="text-decoration-none"><i class="fa fa-table"></i> Tables</a></li>-->
         <li class="list-unstyled"><a href="categorys.php" class="text-decoration-none"><i class="fa fa-list"></i> Categorys</a></li>
         <li class="list-unstyled dropdown">
             <a href="#" class="text-decoration-none dropdown-toggle" id="staffDropdown" data-bs-toggle="dropdown" aria-expanded="false">

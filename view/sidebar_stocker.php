@@ -73,13 +73,13 @@
         if (isset($_COOKIE["isLogin"])) {
             $isLogin = $_COOKIE["isLogin"];
             if ($isLogin == false) {
-                echo '<a href="../user/login.php" class="btn btn-success" style="margin-left: 10px;">Login</a>';
+                echo '<a href="../user/logout.php" class="btn btn-success" style="margin-left: 10px;">Login</a>';
             } else {
-                echo '<a href="../user/login.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
+                echo '<a href="../user/logout.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
             }
         } else {
             // If $isLogin is not set, provide a default behavior (e.g., show login button)
-            echo '<a href="../user/login.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
+            echo '<a href="../user/logout.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fa fa-right-from-bracket"></i></a>';
         }
         ?>
     </div>

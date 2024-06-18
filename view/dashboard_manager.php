@@ -45,9 +45,8 @@ $totalRevenue = $totalSalesData['total_revenue'];
 
 require("../controller/connection.php");
 //Prepare Query
-$statement = $pdo->prepare("SELECT sale.*, coffee_table.name AS table_name, drink.name as drink_name 
+$statement = $pdo->prepare("SELECT sale.*,  drink.name as drink_name 
     FROM sale 
-    INNER JOIN coffee_table ON sale.table_id = coffee_table.id
     INNER JOIN drink ON sale.drink_id = drink.id
     WHERE sale.status=1");
 //Execute Query
@@ -112,7 +111,6 @@ $saleList = $statement->fetchAll(PDO::FETCH_ASSOC);
                      <th scope="col">#</th>
                      <th scope="col">Customer ID</th>
                      <th scope="col">Invoice</th>
-                     <th scope="col">Table</th>
                      <th scope="col">Drink</th>
                      <th scope="col">Qty</th>
                      <th scope="col">Total</th>
@@ -127,7 +125,6 @@ $saleList = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <th scope="row"><?php echo $key + 1 ?></th>
                         <td><?php echo $pro['cus_id']; ?></td>
                         <td><?php echo $pro['invoice_id']; ?></td>
-                        <td><?php echo $pro['table_name']; ?></td>
                         <td><?php echo $pro['drink_name']; ?></td>
                         <td><?php echo $pro['qty']; ?></td>
                         <td>$<?php echo $pro['total']; ?></td>

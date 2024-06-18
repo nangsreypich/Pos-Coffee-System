@@ -25,11 +25,11 @@ if (!$isPrinting && isset($_GET['sale_date'])) {
 }
 
 // Prepare Query
-$statement = $pdo->prepare("SELECT sale.*, coffee_table.name AS table_name, drink.name as drink_name 
+$statement = $pdo->prepare("SELECT sale.*, drink.name as drink_name 
     FROM sale 
-    INNER JOIN coffee_table ON sale.table_id = coffee_table.id
     INNER JOIN drink ON sale.drink_id = drink.id
-    WHERE sale.status=1 AND DATE(sale.sale_date) = :sale_date");
+    WHERE sale.status=1 AND DATE(sale.sale_date) = :sale_date
+    AND so.status = 1");
 $statement->bindParam(':sale_date', $date);
 $statement->execute();
 
@@ -60,7 +60,6 @@ if ($isPrinting) {
                     <th scope="col">#</th>
                     <th scope="col">Customer</th>
                     <th scope="col">Invoice</th>
-                    <th scope="col">Table</th>
                     <th scope="col">Drink</th>
                     <th scope="col">Qty</th>
                     <th scope="col">Total</th>
@@ -75,7 +74,6 @@ if ($isPrinting) {
                         <td><?php echo $key + 1 ?></td>
                         <td><?php echo $pro['cus_id']; ?></td>
                         <td><?php echo $pro['invoice_id']; ?></td>
-                        <td><?php echo $pro['table_name']; ?></td>
                         <td><?php echo $pro['drink_name']; ?></td>
                         <td><?php echo $pro['qty']; ?></td>
                         <td>$<?php echo $pro['total']; ?></td>
@@ -128,7 +126,6 @@ if ($isPrinting) {
                                 <th scope="col">#</th>
                                 <th scope="col">Customer</th>
                                 <th scope="col">Invoice</th>
-                                <th scope="col">Table</th>
                                 <th scope="col">Drink</th>
                                 <th scope="col">Qty</th>
                                 <th scope="col">Total</th>
@@ -143,7 +140,6 @@ if ($isPrinting) {
                                     <td><?php echo $key + 1 ?></td>
                                     <td><?php echo $pro['cus_id']; ?></td>
                                     <td><?php echo $pro['invoice_id']; ?></td>
-                                    <td><?php echo $pro['table_name']; ?></td>
                                     <td><?php echo $pro['drink_name']; ?></td>
                                     <td><?php echo $pro['qty']; ?></td>
                                     <td>$<?php echo $pro['total']; ?></td>

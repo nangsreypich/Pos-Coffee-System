@@ -92,7 +92,7 @@ $errors = [];
 $success = "";
 
 // Database connection
-require("../controller/connection.php");
+require ("../controller/connection.php");
 
 // Fetch categories from the database
 $categories = [];
@@ -103,19 +103,18 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 // Fetch drinks from the database
 $drinks = [];
-$stmt = $pdo->prepare("SELECT id, name, price, image, cat_id FROM drink WHERE status=1 AND description IS NOT NULL AND description <> ''");
+$stmt = $pdo->prepare("SELECT id, name, price, image, cat_id FROM drink WHERE status=1");
 $stmt->execute();
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $drinks[] = $row;
 }
-
 
 // Process order
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
     $payment_type = $_POST['payment_type'];
     $total_payment = $_POST['total_payment'];
     $change = $_POST['change'];
-  
+
     $total = 0;
     $orderDetails = []; // Array to store all order details
 
@@ -129,6 +128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
     if ($change === null || $change === '') { // Check if change is not set or empty
         $errors[] = "Change is required";
     }
+
+    // Username from session
+    $username = $_SESSION['username'];
 
     // Loop through the selected drinks and accumulate the total
     foreach ($_POST['qty'] as $drink_id => $qty) {
@@ -153,7 +155,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
     // Check for errors before proceeding
     if (empty($errors)) {
         // Function to generate a unique numeric ID of a given length
-        function generateUniqueNumericId($length = 10) {
+        function generateUniqueNumericId($length = 10)
+        {
+            // Adjust length and character set as needed
             $characters = '0123456789';
             $charactersLength = strlen($characters);
             $randomString = '';
@@ -163,6 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
             return $randomString;
         }
 
+
         $cus_id = generateUniqueNumericId(); // Unique numeric customer ID
         $invoice_id = generateUniqueNumericId(); // Unique numeric invoice ID
         $sale_date = date('Y-m-d'); // Current date
@@ -170,13 +175,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['process_order'])) {
         // Begin a transaction for atomicity
         $pdo->beginTransaction();
 
-        try {
-            // Insert all items in one go
-            foreach ($orderDetails as $orderItem) {
-                $stmt = $pdo->prepare("INSERT INTO sale (invoice_id, cus_id, drink_id, price, qty, total, total_payment, `change`, payment_type, sale_date) VALUES (?,?,?,?,?,?,?,?,?,?)");
-$stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'], $orderItem['qty'], $orderItem['total'], $total_payment, $change, $payment_type, $sale_date]);
+       try {
+   // Insert into 'orders' table with username
+$order_by = $_SESSION['username'];
 
-            }
+// Insert into 'orders' table
+$stmt = $pdo->prepare("INSERT INTO orders (invoice_id, cus_id, drink_id, price, qty, total, total_payment, `change`, payment_type, sale_date, order_by, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+foreach ($orderDetails as $orderItem) {
+    $drink_id = $orderItem['drink_id'];
+    $price = $orderItem['price'];
+    $qty = $orderItem['qty'];
+    $total = $orderItem['total'];
+
+    $stmt->execute([$invoice_id, $cus_id, $drink_id, $price, $qty, $total, $total_payment, $change, $payment_type, $sale_date, $order_by, 1]);
+}
+
+// Insert into 'sale' table for each item
+$stmt = $pdo->prepare("INSERT INTO sale (invoice_id, cus_id, drink_id, price, qty, total, total_payment, `change`, payment_type, sale_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+foreach ($orderDetails as $orderItem) {
+    $drink_id = $orderItem['drink_id'];
+    $price = $orderItem['price'];
+    $qty = $orderItem['qty'];
+    $total = $orderItem['total'];
+
+    $stmt->execute([$invoice_id, $cus_id, $drink_id, $price, $qty, $total, $total_payment, $change, $payment_type, $sale_date, 1]);
+}
+
+
 
             // Commit the transaction
             $pdo->commit();
@@ -190,16 +217,16 @@ $stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'
 }
 ?>
 
-<?php include('head.php') ?>
+<?php include ('head.php') ?>
 <div class="container-fluid">
-    <?php include('header.php'); ?>
+    <?php include ('header.php'); ?>
     <div class="row">
         <!-- Categories -->
-        <?php include('sidebar_cashier.php') ?>
+        <?php include ('sidebar_customer.php') ?>
         <div class="col-md-5 mt-4">
             <h2>Categories</h2>
             <div class="categories-row">
-                <?php foreach ($categories as $category) : ?>
+                <?php foreach ($categories as $category): ?>
                     <div class="category-card card" onclick="filterDrinks(<?php echo $category['id']; ?>)">
                         <div class="card-body text-center">
                             <h5 class="card-title"><?php echo htmlspecialchars($category['name']); ?></h5>
@@ -209,9 +236,12 @@ $stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'
             </div>
             <div class="drinks-row" id="drink-list">
                 <?php if (!empty($drinks)) { ?>
-                    <?php foreach ($drinks as $drink) : ?>
+                    <?php foreach ($drinks as $drink): ?>
                         <div class="drink-card card drink-item" data-cat-id="<?php echo $drink['cat_id']; ?>">
-                            <img src="<?php echo $drink['image']; ?>" class="card-img-top drink-image" alt="<?php echo htmlspecialchars($drink['name']); ?>" data-name="<?php echo htmlspecialchars($drink['name']); ?>" data-price="<?php echo $drink['price']; ?>" data-id="<?php echo $drink['id']; ?>">
+                            <img src="<?php echo $drink['image']; ?>" class="card-img-top drink-image"
+                                alt="<?php echo htmlspecialchars($drink['name']); ?>"
+                                data-name="<?php echo htmlspecialchars($drink['name']); ?>"
+                                data-price="<?php echo $drink['price']; ?>" data-id="<?php echo $drink['id']; ?>">
                         </div>
                     <?php endforeach; ?>
                 <?php } else { ?>
@@ -256,14 +286,16 @@ $stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'
                     <input type="hidden" name="process_order" value="1">
                     <div class="form-group">
                         <label for="total_payment">Total Payment:</label>
-                        <input type="text" name="total_payment" id="total_payment" class="form-control" style="width: 50%;" required>
+                        <input type="text" name="total_payment" id="total_payment" class="form-control"
+                            style="width: 50%;" required>
                     </div>
                     <div class="form-group">
                         <label for="change">Change:</label>
                         <input type="text" name="change" id="change" class="form-control" style="width: 50%;" readonly>
                     </div>
                     <button class="btn btn-primary btn-block mt-4" type="submit">Place Order</button>
-                    <button class="btn btn-secondary btn-block mt-4" type="button" onclick="printInvoice('<?php echo $invoice_id; ?>')">Print Invoice</button>
+                    <button class="btn btn-secondary btn-block mt-4" type="button"
+                        onclick="printInvoice('<?php echo $invoice_id; ?>')">Print Invoice</button>
                 </div>
             </form>
         </div>
@@ -401,7 +433,7 @@ $stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'
     document.getElementById('total_payment').addEventListener('input', updateChange);
 
     // Event listener for form submission
-    document.querySelector('button[type="submit"]').addEventListener('click', function(event) {
+    document.querySelector('button[type="submit"]').addEventListener('click', function (event) {
         event.preventDefault(); // Prevent the form from submitting
         const total_price = parseFloat(document.getElementById('total_price').textContent);
         const total_payment = parseFloat(document.getElementById('total_payment').value);
@@ -427,23 +459,23 @@ $stmt->execute([$invoice_id, $cus_id, $orderItem['drink_id'], $orderItem['price'
     }
 
     function printInvoice(invoiceId) {
-    const url = `print_invoice.php?invoice_id=${invoiceId}`;
+        const url = `print_invoice.php?invoice_id=${invoiceId}`;
 
-    // Send an AJAX request to retrieve the invoice content
-    fetch(url)
-        .then(response => response.text())
-        .then(html => {
-            // Open a new window with the invoice content
-            const printWindow = window.open('', '_blank');
-            printWindow.document.open();
-            printWindow.document.write(html);
-            printWindow.document.close();
-            // Print the invoice
-            printWindow.print();
-        })
-        .catch(error => {
-            console.error('Error generating invoice:', error);
-        });
-}
+        // Send an AJAX request to retrieve the invoice content
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                // Open a new window with the invoice content
+                const printWindow = window.open('', '_blank');
+                printWindow.document.open();
+                printWindow.document.write(html);
+                printWindow.document.close();
+                // Print the invoice
+                printWindow.print();
+            })
+            .catch(error => {
+                console.error('Error generating invoice:', error);
+            });
+    }
 
 </script>

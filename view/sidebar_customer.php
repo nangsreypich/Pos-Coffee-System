@@ -86,34 +86,15 @@
 
     <!-- Sidebar menu -->
     <ul class="list-group">
-        <li class="list-unstyled"><a href="dashboard_cashier.php" class="text-decoration-none"> <i class="fa fa-gauge"></i> Dashboard</a></li>
-        <li class="list-unstyled"><a href="my_profile2.php" class="text-decoration-none"><i class="fa fa-user"></i> My Profile</a></li>
-        <!--<li class="list-unstyled"><a href="tables1.php" class="text-decoration-none"><i class="fa fa-table"></i> Tables</a></li>-->
-        <li class="list-unstyled"><a href="categorys1.php" class="text-decoration-none"><i class="fa fa-list"></i> Categorys</a></li>
+        <li class="list-unstyled"><a href="dashboard_customer.php" class="text-decoration-none"> <i class="fa fa-gauge"></i> Dashboard</a></li>
+        <li class="list-unstyled"><a href="my_profile3.php" class="text-decoration-none"><i class="fa fa-user"></i> My Profile</a></li>
         <li class="list-unstyled dropdown">
             <a href="#" class="text-decoration-none dropdown-toggle" id="staffDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-cart-shopping"></i> Sales
+                <i class="fa fa-cart-shopping"></i> Order
             </a>
             <ul class="dropdown-menu" aria-labelledby="staffDropdown">
-                <li><a class="dropdown-item" href="add_sale1.php">Add Sales</a></li>
-                <li><a class="dropdown-item" href="all_sale1.php">All Sales</a></li>
-            </ul>
-        </li>
-        <li class="list-unstyled dropdown">
-            <a href="#" class="text-decoration-none dropdown-toggle" id="staffDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-mug-saucer"></i> Drinks
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="staffDropdown">
-                <li><a class="dropdown-item" href="add_drink1.php">Add Drink</a></li>
-                <li><a class="dropdown-item" href="all_drink1.php">All Drinks</a></li>
-            </ul>
-        </li>
-        <li class="list-unstyled dropdown">
-            <a href="#" class="text-decoration-none " id="reportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-paste"></i> Report
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="reportDropdown">
-                <li><a class="dropdown-item" href="revenue1.php">Revenue</a></li>
+                <li><a class="dropdown-item" href="add_sale2.php">Add Order</a></li>
+                <li><a class="dropdown-item" href="all_sale2.php">My Order</a></li>
             </ul>
         </li>
     </ul>

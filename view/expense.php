@@ -25,10 +25,13 @@ if (!$isPrinting && isset($_GET['order_date'])) {
 }
 
 // Prepare Query for Expense Report
-$statement = $pdo->prepare("SELECT so.*, ingredient.product_name
+$statement = $pdo->prepare("SELECT so.*, ingredient.product_name, staff.name AS stocker_name
     FROM stock_order AS so 
     INNER JOIN ingredient ON so.product_id = ingredient.id
-    WHERE DATE(so.order_date) = :order_date");
+    INNER JOIN staff ON so.stocker_id = staff.id
+    WHERE DATE(so.order_date) = :order_date
+    AND so.status = 1");
+
 $statement->bindParam(':order_date', $date);
 $statement->execute();
 
@@ -69,7 +72,7 @@ if ($isPrinting) {
                 <?php foreach ($orderList as $key => $order) { ?>
                     <tr>
                         <td><?php echo $key + 1 ?></td>
-                        <td><?php echo $order['stocker_id']; ?></td>
+                        <td><?php echo $order['stocker_name']; ?></td>
                         <td><?php echo $order['product_name']; ?></td>
                         <td>$<?php echo $order['price']; ?></td>
                         <td><?php echo $order['qty']; ?></td>
@@ -131,7 +134,7 @@ if ($isPrinting) {
                             <?php foreach ($orderList as $key => $order) { ?>
                                 <tr>
                                     <td><?php echo $key + 1 ?></td>
-                                    <td><?php echo $order['stocker_id']; ?></td>
+                                    <td><?php echo $order['stocker_name']; ?></td>
                                     <td><?php echo $order['product_name']; ?></td>
                                     <td>$<?php echo $order['price']; ?></td>
                                     <td><?php echo $order['qty']; ?></td>

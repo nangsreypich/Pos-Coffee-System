@@ -8,13 +8,9 @@ if(count($_POST) > 0){
 }
 
 if(isset($_arguments["do"])&& ($_arguments["do"] != "")){
-	if(($_arguments["do"] == "add_classroom")){//MSK-000143-add_classroom
-		$page = "model/add_classroom.php";
-	}else if(($_arguments["do"] == "add_grade")){//MSK-000143-add_grade
-		$page = "model/add_grade.php";
-	}																			
+																		
 }else{
-	header("Location: user/login.php");
+	header("Location: view/index1.php");
 }
 require $page;
 
